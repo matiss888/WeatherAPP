@@ -15,6 +15,8 @@ const weatherImages = {
     1: "cloudy.jpg",
     2: "cloudy.jpg",
     3: "cloudy.jpg",
+    45: "foggy.jpg",
+    48: "foggy.jpg",
     61: "rainy.jpg",
     63: "rainy.jpg",
     65: "rainy.jpg",
@@ -29,6 +31,12 @@ async function getWeather() {
         if(inputText.value === "") {
             return;
         }
+            // Show "Loading" while the data is fetching
+            weatherContainer.innerHTML = "";
+            const loadingText = document.createElement("p");
+            loadingText.textContent = "Loading...";
+            weatherContainer.appendChild(loadingText);
+
             // Getting location coordinates
             const locationData = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${inputText.value}&count=1`);    
             if(locationData.ok) {
@@ -71,13 +79,14 @@ async function getWeather() {
 
                     const currentPrecipitation = weatherDataJson.current.precipitation;
                     const currentPrecipitationUnits = weatherDataJson.current_units.precipitation;
+
                     
                     // Clear previous or just clear space
                     weatherContainer.innerHTML = "";
 
                     // Set the background according to the weather
 
-                    const weatherCode = weatherDataJson.current.weathercode;
+                    const weatherCode = weatherDataJson.current.weathercode;              
                     cardBody.style.backgroundImage = `url('images/${weatherImages[weatherCode]}')`;
 
                     // Get the city name
@@ -110,7 +119,7 @@ async function getWeather() {
 
                 }
         }
-        inputText.textContent = "";
+        inputText.value = "";
     } catch (error) {
         console.log("Error", error.message);
     }
